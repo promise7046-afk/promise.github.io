@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>이번 생은 축구다: 모바일 커리어 에디션</title>
+    <!-- Tailwind CSS for Modern Responsive UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #0b0f19;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        /* Mobile interactive optimizations */
+        button, select, input {
+            min-height: 44px;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        .glowing-gold {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+            border-color: #eab308;
+        }
+        .pulse-gold {
+            animation: pulse-gold-effect 2s infinite;
+        }
+        @keyframes pulse-gold-effect {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- TOP COMPACT STATUS BAR (Dynamic Fixed) -->
+    <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800/80 sticky top-0 z-40 py-3 px-4 shadow-md transition-all">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <h1 class="text-base font-black text-emerald-400 tracking-tight flex items-center gap-1.5">
+                ⚽ 이번 생은 축구다 <span class="text-[9px] bg-slate-800 text-slate-400 py-0.5 px-1.5 rounded-full font-bold">Mobile v1.3</span>
+            </h1>
+            <div id="quick-status" class="hidden flex items-center gap-2 text-xs">
+                <span class="bg-slate-950/80 px-2 py-1.5 rounded-lg border border-slate-800">🎂 <strong id="header-age" class="text-slate-200">8</strong>세</span>
+                <span class="bg-slate-950/80 px-2 py-1.5 rounded-lg border border-slate-800 max-w-[100px] truncate">🏠 <strong id="header-team" class="text-cyan-400">-</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE MAIN PLATFORM CONTAINER -->
+    <main class="flex-grow w-full max-w-md mx-auto px-4 py-6 flex flex-col justify-start">
+
+        <!-- ================= STEP 1: PLAYER REGISTRATION ================= -->
+        <section id="page-creation" class="w-full bg-slate-900 rounded-2xl border border-slate-800/80 p-5 shadow-2xl space-y-5">
+            <div class="text-center space-y-1">
+                <h2 class="text-xl font-extrabold text-white">👤 유망주 선수 등록</h2>
+                <p class="text-slate-400 text-xs leading-normal">당신의 그라운드 연대기를 새롭게 써내려갈 캐릭터를 커스텀하세요.</p>
+            </div>
+            
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">✍️ 선수 이름</label>
+                    <input type="text" id="input-name" placeholder="이름을 입력하세요 (기본: 이유망)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 focus:outline-none focus:border-emerald-500 text-white text-sm">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">🔢 등번호 (1~99)</label>
+                        <input type="number" id="input-backnumber" min="1" max="99" value="10" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 focus:outline-none focus:border-emerald-500 text-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-300 mb-1">🦶 선호 주발</label>
+                        <select id="input-foot" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 focus:outline-none focus:border-emerald-500 text-white text-sm">
+                            <option value="오른발">오른발</option>
+                            <option value="왼발">왼발</option>
+                            <option value="양발">양발</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1.5">🎯 포지션 선택</label>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <button onclick="selectPosition('공격수', this)" class="pos-btn bg-slate-950 border border-slate-800 rounded-xl p-3 text-left transition-all border-emerald-500 text-emerald-400 font-bold" data-pos="공격수">🔥 공격수</button>
+                        <button onclick="selectPosition('미드필더', this)" class="pos-btn bg-slate-950 border border-slate-800 rounded-xl p-3 text-left transition-all text-slate-300" data-pos="미드필더">🪄 미드필더</button>
+                        <button onclick="selectPosition('윙어', this)" class="pos-btn bg-slate-950 border border-slate-800 rounded-xl p-3 text-left transition-all text-slate-300" data-pos="윙어">⚡ 윙어</button>
+                        <button onclick="selectPosition('수비수', this)" class="pos-btn bg-slate-950 border border-slate-800 rounded-xl p-3 text-left transition-all text-slate-300" data-pos="수비수">🛡️ 수비수</button>
+                        <button onclick="selectPosition('골키퍼', this)" class="pos-btn col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-3 text-left transition-all text-slate-300" data-pos="골키퍼">🧤 골키퍼</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="nextToArchetype()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-emerald-500/20 active:scale-[0.98]">
+                능력치 아키타입 선택 ➡️
+            </button>
+        </section>
+
+        <!-- ================= STEP 2: ARCHETYPE & RE-ROLL ================= -->
+        <section id="page-archetype" class="hidden w-full space-y-4">
+            <!-- Archetype dropdown card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                <h3 class="text-xs font-bold text-white">📊 선수의 능력치 유형 (Archetype) 고르기</h3>
+                <div id="archetype-list" class="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                    <!-- Dynamic rendering in JS -->
+                </div>
+            </div>
+
+            <!-- Stats Sheet Display -->
+            <div id="stat-sheet-panel" class="bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span id="badge-legendary" class="text-[10px] bg-slate-800 text-slate-400 py-1 px-2.5 rounded font-extrabold">일반 유망주 등급</span>
+                    <span class="text-xs text-slate-400" id="current-arch-name">유형 미선택</span>
+                </div>
+                
+                <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                    📋 <span id="sheet-player-name">-</span> 능력치 시트 (1~100 스케일)
+                </h4>
+
+                <div id="stats-grid" class="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-slate-300">
+                    <!-- Dynamic grid of 14 stats -->
+                </div>
+
+                <div class="space-y-2 pt-3 border-t border-slate-800/80">
+                    <button id="btn-roll" onclick="rollStats()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1">
+                        🎲 능력치 시트 재배정 (Re-roll)
+                    </button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="backToCreation()" class="bg-slate-900 border border-slate-800 text-slate-400 font-bold py-2.5 px-4 rounded-xl text-xs transition-all">
+                            ⬅️ 정보 변경
+                        </button>
+                        <button onclick="confirmPlayerAndStart()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2.5 px-4 rounded-xl text-xs transition-all active:scale-[0.98]">
+                            첫 시즌 계약하기 ✍️
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= STEP 3: DASHBOARD & ACTIONS ================= -->
+        <section id="page-dashboard" class="hidden w-full space-y-4">
+            <!-- Compact Profile Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl pointer-events-none"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-12 bg-emerald-500/10 text-emerald-400 text-base font-black flex items-center justify-center rounded-xl" id="profile-number">#10</div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <span id="profile-name">이유망</span>
+                            <span id="profile-legend-tag" class="hidden text-[8px] bg-amber-500 text-slate-950 px-1 py-0.5 rounded font-black">LEGEND</span>
+                        </h3>
+                        <p class="text-[10px] text-slate-400" id="profile-position">공격수 | 오른발</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 border-t border-slate-800 pt-3 text-[11px] text-slate-400">
+                    <div class="flex justify-between"><span class="text-slate-500">나이/연차</span><span id="profile-stage-text" class="text-slate-200">8세 (1년차)</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">누적 명성</span><span id="profile-rep" class="text-slate-200">50</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">현재 소속</span><span id="profile-team" class="text-cyan-400 font-bold max-w-[80px] truncate">-</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">현재 연봉</span><span id="profile-salary" class="text-yellow-400 font-bold">-</span></div>
+                </div>
+            </div>
+
+            <!-- Career summary stats -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md">
+                <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
+                    <div class="bg-slate-950 p-2 rounded-xl border border-slate-800/60">
+                        <div class="text-slate-500">출전</div>
+                        <div class="text-xs font-bold text-slate-200" id="cum-matches">0</div>
+                    </div>
+                    <div class="text-center bg-slate-950 p-2 rounded-xl border border-slate-800/60">
+                        <div class="text-slate-500">평점</div>
+                        <div class="text-xs font-bold text-yellow-400" id="cum-rating">0.00</div>
+                    </div>
+                    <div class="bg-slate-950 p-2 rounded-xl border border-slate-800/60">
+                        <div class="text-slate-500">득점</div>
+                        <div class="text-xs font-bold text-emerald-400" id="cum-goals">0</div>
+                    </div>
+                    <div class="bg-slate-950 p-2 rounded-xl border border-slate-800/60">
+                        <div class="text-slate-500">도움</div>
+                        <div class="text-xs font-bold text-cyan-400" id="cum-assists">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats Progress lists -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                    <h4 class="text-xs font-bold text-slate-300 flex items-center gap-1">⚡ 선수의 주요 능력치 밸런스</h4>
+                    <span class="text-[10px] text-emerald-400 font-bold cursor-pointer" onclick="toggleFullStats()" id="btn-stats-toggle">전체보기 🔽</span>
+                </div>
+                <div id="dashboard-stats-grid" class="grid grid-cols-2 gap-x-3 gap-y-2">
+                    <!-- Renders stats with micro progress-bars -->
+                </div>
+            </div>
+
+            <!-- Action board -->
+            <div id="action-board" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-2xl space-y-4">
+                <div class="border-b border-slate-800 pb-2 flex justify-between items-center text-xs">
+                    <span class="font-extrabold text-white" id="action-board-title">📜 계약 갱신 및 이적 조율</span>
+                    <span id="rehab-banner" class="hidden text-[9px] bg-red-500/10 text-red-400 py-0.5 px-2 rounded-full border border-red-500/20 font-black">🤕 부상 재활</span>
+                </div>
+
+                <!-- Dynamic container for actions -->
+                <div id="action-interactive-content" class="space-y-3">
+                    <!-- Contracts / Stays / Transfers render here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= STEP 4: LIVE MATCH SIMULATION ================= -->
+        <section id="page-match-engine" class="hidden w-full bg-slate-900 rounded-2xl border border-slate-800 p-4 shadow-2xl flex flex-col justify-between items-center space-y-5">
+            <div class="w-full text-center space-y-1">
+                <span class="text-[9px] uppercase bg-emerald-500/10 text-emerald-400 py-1 px-3 border border-emerald-500/20 rounded-full font-extrabold">LIVE MATCH ENGAGING</span>
+                <h3 class="text-sm font-bold text-slate-200" id="match-sim-banner">리그 일정 시뮬레이션 일괄 수행 중</h3>
+            </div>
+
+            <!-- Mobile Compact Pitch representation -->
+            <div class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center space-y-3 min-h-[110px]">
+                <div class="flex justify-between w-full text-[10px] font-bold px-2">
+                    <span class="text-cyan-400 max-w-[120px] truncate" id="match-sim-ourteam">-</span>
+                    <span class="text-red-400">상대 리그 라이벌</span>
+                </div>
+                <div class="w-full bg-slate-900 h-2.5 rounded-full relative overflow-hidden">
+                    <div id="anim-ball" class="absolute top-0 bottom-0 m-auto w-4 h-4 bg-yellow-400 text-xs rounded-full flex justify-center items-center font-bold" style="left: 0%; transition: left 0.15s linear;">⚽</div>
+                </div>
+                <div class="text-center text-[10px] text-slate-400 font-bold" id="anim-status-text">전방 압박 진행 및 세컨볼 조율 중...</div>
+            </div>
+
+            <!-- Commentaries Feed -->
+            <div class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-[10px] font-mono space-y-1.5 h-[150px] overflow-y-auto" id="commentary-console">
+                <!-- commentary items -->
+            </div>
+
+            <button id="btn-matches-done" onclick="finishMatchesAndShowStandings()" disabled class="w-full bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-not-allowed">
+                다음: 최종 리그 결과표 확인 ➡️
+            </button>
+        </section>
+
+        <!-- ================= STEP 5: LEAGUE STANDINGS ================= -->
+        <section id="page-standings" class="hidden w-full bg-slate-900 rounded-2xl border border-slate-800 p-4 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="max-w-[200px]">
+                    <h3 class="text-sm font-bold text-white truncate" id="standings-title-text">-</h3>
+                    <p class="text-[9px] text-slate-400">정규 라운드 통산 리그 최종 순위표</p>
+                </div>
+                <button onclick="nextToDetailedRoundResults()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 px-3 rounded-lg text-[10px] transition-all flex items-center gap-1 active:scale-[0.98]">
+                    상세 기록 ➡️
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="overflow-x-auto border border-slate-800/80 rounded-xl">
+                    <table class="w-full text-left text-[10px] border-collapse">
+                        <thead>
+                            <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold">
+                                <th class="py-2 px-2 text-center">순위</th>
+                                <th class="py-2 px-2">팀명</th>
+                                <th class="py-2 px-1 text-center">경기</th>
+                                <th class="py-2 px-1 text-center">승</th>
+                                <th class="py-2 px-1 text-center">무</th>
+                                <th class="py-2 px-1 text-center">패</th>
+                                <th class="py-2 px-1 text-center">득실</th>
+                                <th class="py-2 px-2 text-center text-yellow-400">승점</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standings-table-body">
+                            <!-- Dynamic rendering of league rankings -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="text-[10px] uppercase font-black text-yellow-400 tracking-wider">📊 리그 득점 랭킹 (Top 5)</h4>
+                    <div class="overflow-x-auto border border-slate-800/80 rounded-xl">
+                        <table class="w-full text-left text-[10px] border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold">
+                                    <th class="py-2 px-3 text-center">순위</th>
+                                    <th class="py-2 px-3">선수명</th>
+                                    <th class="py-2 px-3">소속팀</th>
+                                    <th class="py-2 px-3 text-center">득점</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scorers-table-body">
+                                <!-- Dynamic rendering of scorers -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= STEP 6: MATCH-BY-MATCH LIST ================= -->
+        <section id="page-match-details" class="hidden w-full bg-slate-900 rounded-2xl border border-slate-800 p-4 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h3 class="text-xs font-bold text-white flex items-center gap-1">📋 경기별 상대팀 상세 결과표</h3>
+                <span class="text-[9px] text-slate-400" id="detailed-sheet-meta">-</span>
+            </div>
+
+            <div class="max-h-[220px] overflow-y-auto border border-slate-800/85 rounded-xl">
+                <table class="w-full text-left text-[10px] border-collapse">
+                    <thead class="bg-slate-950 text-slate-400 font-bold sticky top-0">
+                        <tr class="border-b border-slate-800">
+                            <th class="py-2 px-2 text-center">라운드</th>
+                            <th class="py-2 px-3">상대팀</th>
+                            <th class="py-2 px-2 text-center">스코어</th>
+                            <th class="py-2 px-2 text-center">결과</th>
+                            <th class="py-2 px-2 text-center">평점</th>
+                        </tr>
+                    </thead>
+                    <tbody id="match-details-table-body">
+                        <!-- Dynamic round-by-round results list -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Season summary stats and logs -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-3">
+                <div class="text-[10px] space-y-1">
+                    <h4 class="font-extrabold text-white text-xs" id="summary-season-title">최종 요약 결과표</h4>
+                    <p class="text-slate-400">소속팀: <span id="summary-team" class="text-cyan-400 font-semibold">-</span> | 연봉: <span id="summary-salary" class="text-yellow-400 font-semibold">-</span></p>
+                    <div id="stat-updown-log" class="text-[9px] space-y-1 pt-1.5 text-slate-400 border-t border-slate-800/60">
+                        <!-- Growth logs / Injury triggers list here -->
+                    </div>
+                </div>
+                <button onclick="finishSeasonDetailedSheet()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2.5 rounded-xl text-xs transition-all active:scale-[0.98]">
+                    다음: 연봉 협상 및 이적 시장 기상도 ➡️
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= STEP 7: ENTIRE RETIREMENT ENDING ================= -->
+        <section id="page-ending" class="hidden w-full bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl flex flex-col justify-between items-center text-center space-y-5">
+            <div class="space-y-1">
+                <span class="text-[9px] uppercase bg-amber-500/10 text-amber-400 py-1 px-3 border border-amber-500/20 rounded-full font-black">LEGEND RETIRED</span>
+                <h3 class="text-lg font-black text-white">🏆 그라운드의 영원한 지배자: 최종 은퇴 보고서</h3>
+                <p class="text-slate-400 text-[10px]">당신의 아름다웠던 축구 연대기가 역사의 한 페이지로 편찬되었습니다.</p>
+            </div>
+
+            <div class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2.5 text-[10px] text-left">
+                <h4 class="text-xs font-extrabold text-emerald-400 border-b border-slate-800 pb-1 flex items-center gap-1">👤 <span id="end-player-name">-</span> 통산 성적 시트</h4>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-slate-300">
+                    <div>포지션: <strong id="end-position">-</strong></div>
+                    <div>은퇴 나이: <strong id="end-age">-</strong>세</div>
+                    <div>최종 명성: <strong id="end-rep">-</strong> / 1000</div>
+                    <div>최종 연봉: <strong id="end-salary" class="text-yellow-400">-</strong></div>
+                    <div>최종 소속: <strong id="end-team" class="text-cyan-400">-</strong></div>
+                    <div>통산 출전: <strong id="end-matches">-</strong>경기</div>
+                    <div>통산 득점: <strong id="end-goals" class="text-emerald-400">-</strong>골</div>
+                    <div>통산 도움: <strong id="end-assists" class="text-cyan-400">-</strong>도움</div>
+                    <div class="col-span-2 pt-1 border-t border-slate-800/60 mt-1">통산 평균 평점: <strong id="end-avg-rating" class="text-yellow-400">-</strong></div>
+                </div>
+            </div>
+
+            <!-- Narrations -->
+            <div class="w-full bg-slate-950 border border-slate-850 p-3 rounded-xl border-l-4 border-emerald-500 text-[11px] text-slate-300 text-left space-y-2">
+                <h5 class="font-extrabold text-emerald-400 text-sm" id="end-narration-title">엔딩 타이틀</h5>
+                <p id="end-narration-body" class="leading-relaxed text-justify"></p>
+            </div>
+
+            <button onclick="restartGame()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl transition-all shadow-md active:scale-[0.98]">
+                새로운 축구선수 라이프 시작하기 🔄
+            </button>
+        </section>
+
+    </main>
+
+    <!-- FOOTER INFO -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-3 text-center text-[10px] text-slate-500">
+        <div>© 2026 이번 생은 축구다. Grounded with Gemini Notebook</div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPT PLAYGROUND -->
+    <script>
+        // Grounded archetypes configurations matched to v16
+        const ARCHETYPES = {
+            "1": {
+                name: "가속도형 (Speedster)",
+                desc: "빠른 속도로 상대 수비 라인을 파괴하는 크랙",
+                stats: { "가속도": 85, "주력": 80, "개인기": 50, "드리블": 55, "패스": 45, "골 결정력": 50, "침착성": 45, "판단력": 50, "시야": 40, "위치선정": 55, "승부욕": 50, "지구력": 55, "몸싸움": 45, "타고난 체력": 60 }
+            },
+            "2": {
+                name: "개인기형 (Technician)",
+                desc: "화려한 개인기와 발기술로 그라운드를 누비는 예술가",
+                stats: { "가속도": 55, "주력": 50, "개인기": 85, "드리블": 80, "패스": 60, "골 결정력": 55, "침착성": 60, "판단력": 50, "시야": 55, "위치선정": 45, "승부욕": 50, "지구력": 45, "몸싸움": 40, "타고난 체력": 50 }
+            },
+            "3": {
+                name: "승부욕형 (Fighter)",
+                desc: "강인한 정신력과 지치지 않는 투지로 무장한 파이터",
+                stats: { "가속도": 55, "주력": 55, "개인기": 45, "드리블": 45, "패스": 50, "골 결정력": 45, "침착성": 55, "판단력": 60, "시야": 45, "위치선정": 60, "승부욕": 90, "지구력": 65, "몸싸움": 55, "타고난 체력": 60 }
+            },
+            "4": {
+                name: "강철체력형 (Iron Man)",
+                desc: "왕성한 활동량과 압도적인 회복력의 철인",
+                stats: { "가속도": 60, "주력": 55, "개인기": 45, "드리블": 45, "패스": 45, "골 결정력": 45, "침착성": 50, "판단력": 50, "시야": 40, "위치선정": 55, "승부욕": 60, "지구력": 90, "몸싸움": 60, "타고난 체력": 90 }
+            },
+            "5": {
+                name: "몸싸움형 (Target Man)",
+                desc: "수비진과의 거친 몸싸움을 버텨내는 등대",
+                stats: { "가속도": 50, "주력": 45, "개인기": 45, "드리블": 40, "패스": 45, "골 결정력": 55, "침착성": 50, "판단력": 50, "시야": 40, "위치선정": 70, "승부욕": 60, "지구력": 55, "몸싸움": 85, "타고난 체력": 65 }
+            },
+            "6": {
+                name: "피니쉬형 (Finisher)",
+                desc: "상자 안에서의 침착함과 면도날 같은 슛팅의 킬러",
+                stats: { "가속도": 55, "주력": 55, "개인기": 50, "드리블": 45, "패스": 45, "골 결정력": 85, "침착성": 80, "판단력": 55, "시야": 40, "위치선정": 65, "승부욕": 55, "지구력": 45, "몸싸움": 45, "타고난 체력": 50 }
+            },
+            "7": {
+                name: "판단력형 (Tactician)",
+                desc: "경기를 읽고 빈 공간을 영리하게 선점하는 지략가",
+                stats: { "가속도": 55, "주력": 55, "개인기": 50, "드리블": 45, "패스": 55, "골 결정력": 50, "침착성": 65, "판단력": 85, "시야": 50, "위치선정": 80, "승부욕": 55, "지구력": 50, "몸싸움": 45, "타고난 체력": 50 }
+            },
+            "8": {
+                name: "연결형 (Playmaker)",
+                desc: "넓은 시야와 칼패스로 찬스를 생산하는 마에스트로",
+                stats: { "가속도": 50, "주력": 50, "개인기": 60, "드리블": 50, "패스": 85, "골 결정력": 45, "침착성": 65, "판단력": 70, "시야": 80, "위치선정": 50, "승부욕": 50, "지구력": 55, "몸싸움": 40, "타고난 체력": 50 }
+            },
+            "9": {
+                name: "돌파형 (Dribbler)",
+                desc: "측면에 특화되어 1대1 돌파로 허무는 크랙",
+                stats: { "가속도": 65, "주력": 75, "개인기": 55, "드리블": 80, "패스": 50, "골 결정력": 55, "침착성": 55, "판단력": 55, "시야": 45, "위치선정": 55, "승부욕": 50, "지구력": 55, "몸싸움": 40, "타고난 체력": 55 }
+            },
+            "10": {
+                name: "올라운더형 (All-Rounder)",
+                desc: "어느 한 분야에 치우치지 않고 공수 전반 고른 만능형 육각형",
+                stats: { "가속도": 62, "주력": 62, "개인기": 62, "드리블": 62, "패스": 65, "골 결정력": 62, "침착성": 62, "판단력": 65, "시야": 62, "위치선정": 62, "승부욕": 65, "지구력": 65, "몸싸움": 62, "타고난 체력": 62 }
+            },
+            "11": {
+                name: "거미손형 (Spider Hands)",
+                desc: "GK 특화로 수비 집중력, 반사 컨택, 판단력이 최상인 수문장",
+                stats: { "가속도": 45, "주력": 45, "개인기": 40, "드리블": 40, "패스": 55, "골 결정력": 35, "침착성": 80, "판단력": 85, "시야": 60, "위치선정": 80, "승부욕": 85, "지구력": 80, "몸싸움": 75, "타고난 체력": 80 }
+            }
+        };
+
+        const STAGES = [
+            { name: "유소년기 (Youth)", years: 6, min_age: 8, matches_per_year: 20, difficulty: 0.8, salary_unit: "만원" },
+            { name: "미들스쿨 (Middle School)", years: 3, min_age: 14, matches_per_year: 24, difficulty: 1.4, salary_unit: "만원" },
+            { name: "하이스쿨 (High School)", years: 3, min_age: 17, matches_per_year: 28, difficulty: 2.0, salary_unit: "만원" },
+            { name: "프로 2부리그 (Pro 2nd Division)", years: 99, min_age: 20, matches_per_year: 38, difficulty: 3.8, salary_unit: "만원" },
+            { name: "프로 1부리그 (Pro 1st Division)", years: 99, min_age: 20, matches_per_year: 38, difficulty: 5.2, salary_unit: "만원" }
+        ];
+
+        const YOUTH_TEAMS = ["새싹 FC", "유스 유나이티드", "주니어 타이거즈", "화랑 유스", "금강 축구교실", "드림 주니어", "번개 FC", "슛돌이 유나이티드"];
+        const MIDDLE_TEAMS = ["강북중 축구부", "신라중 FC", "한밭중 스포르트", "해동중 축구부", "동도중 유나이티드", "서라벌중 체육부", "청룡중 FC", "백호중 축구단"];
+        const HIGH_TEAMS = ["동북고 축구클럽", "부평고 체육단", "광양제철고 FC", "현풍고 스쿼드", "학성고 유나이티드", "보인고 FC", "한강고 축구부", "태양고 FC"];
+        const PRO2_TEAMS = ["수원 삼성 블루윙즈", "부산 아이파크", "FC 안양", "전남 드래곤즈", "서울 이랜드 FC", "부천 FC 1995", "김포 FC", "충남아산 FC", "성남 FC", "안산 그리너스"];
+        const PRO1_TEAMS = ["울산 HD FC", "전북 현대 모터스", "포항 스틸러스", "FC 서울", "광주 FC", "대구 FC", "강원 FC", "수원 FC", "제주 유나이티드", "대전 하나 시티즌", "인천 유나이티드", "김천 상무"];
+
+        const TEAM_RATINGS = {
+            "새싹 FC": 80, "유스 유나이티드": 75, "주니어 타이거즈": 70, "화랑 유스": 65, "금강 축구교실": 60, "드림 주니어": 55, "번개 FC": 50, "슛돌이 유나이티드": 45,
+            "강북중 축구부": 82, "신라중 FC": 78, "한밭중 스포르트": 72, "해동중 축구부": 68, "동도중 유나이티드": 64, "서라벌중 체육부": 60, "청룡중 FC": 54, "백호중 축구단": 48,
+            "동북고 축구클럽": 84, "부평고 체육단": 80, "광양제철고 FC": 75, "현풍고 스쿼드": 70, "학성고 유나이티드": 65, "보인고 FC": 60, "한강고 축구부": 55, "태양고 FC": 50,
+            "수원 삼성 블루윙즈": 82, "부산 아이파크": 78, "FC 안양": 74, "전남 드래곤즈": 70, "서울 이랜드 FC": 68, "부천 FC 1995": 64, "김포 FC": 60, "충남아산 FC": 58, "성남 FC": 54, "안산 그리너스": 48,
+            "울산 HD FC": 95, "전북 현대 모터스": 92, "포항 스틸러스": 88, "FC 서울": 85, "광주 FC": 80, "대구 FC": 76, "강원 FC": 74, "제주 유나이티드": 72, "인천 유나이티드": 70, "대전 하나 시티즌": 68, "수원 FC": 64, "김천 상무": 60
+        };
+
+        const SNS_BAD_EVENTS = [
+            "팬들과의 SNS 설전: 경기력 비판 댓글에 감정적으로 폭언을 퍼부어 축구계 전체의 비난을 샀습니다.",
+            "상대 팀 팬들의 질투와 악플 대응: 원정 경기 도발에 SNS로 부적절한 맞대응 조롱 사진을 게시하여 구단 징계위원회에 회부되었습니다.",
+            "이성 사생활 스캔들 폭로: 주말 밤 클럽 심야 데이트 사진이 SNS 폭로 전용 계정에 업로드되며 언론의 집중 공세를 받았습니다.",
+            "가족과의 금전적 갈등 유출: 집안 내 사적 갈등이 개인 부계정 SNS를 통해 누출되어 팬들의 거센 우려를 자아냈습니다."
+        ];
+
+        const SNS_GOOD_EVENTS = [
+            "어린이 팬 소원 성취 미담: 길거리에서 우연히 만난 소년 팬에게 등번호 축구화를 직접 선물하고 함께 사진을 찍은 미담이 커뮤니티에서 대흥행했습니다.",
+            "감동의 동료 격려 헌사: 장기 부상으로 침체된 팀 후배에게 SNS로 영양제 선물과 격려를 보냈습니다.",
+            "기부 및 선행 폭로: 이번 시즌 득점 수당 전액을 연말 소아암 환자 치료 단체에 남모르게 후원한 사실이 널리 알려졌습니다."
+        ];
+
+        const INJURY_EVENTS = [
+            "🤕 [장기 골절 부상] 경기 도중 상대 수비수의 거친 무릎 백태클에 쓰러지며 십자인대 파열 부상을 입었습니다!",
+            "🤕 [발목 골절 부상] 훈련 세션 도중 잔디에 발이 걸려 발목 골절 및 전방 인대 전파열이라는 대형 악재가 발생했습니다!",
+            "🤕 [근육 파열 손상] 시즌 최종 매치에서 스프린트 도중 햄스트링이 완전히 찢어지는 치명적인 장기 근육 파열 손상을 입었습니다!"
+        ];
+
+        const COPING_OPTIONS = [
+            {
+                action: "직접 해명",
+                desc: "SNS를 통해 개인적인 입장과 정중한 사과가 담긴 직접 해명문을 게시합니다.",
+                success: "진정성 있는 사과와 명확한 팩트 해명이 팬들의 마음을 움직여 오해가 풀렸습니다. 여론이 극적으로 반전되었습니다!",
+                failure: "정제되지 않은 어휘와 감정적인 변명이 오히려 불에 기름을 부은 격이 되어 팬들의 공분을 더 크게 샀습니다."
+            },
+            {
+                action: "침묵 및 무시",
+                desc: "일체의 반응을 하지 않고 침묵을 유지하며 여론이 자연스럽게 묻히기를 기다립니다.",
+                success: "묵묵히 침묵을 지키는 동안 다른 대형 스포츠 이슈가 터지며 대중의 관심이 자연스럽게 멀어졌습니다. 조용히 사태가 무마되었습니다.",
+                failure: "팬들은 일체의 대응이 없는 것을 오만함과 무시로 받아들여 비판 여론이 겉잡을 수 없이 증폭되었습니다."
+            },
+            {
+                action: "감독에게 면담신청",
+                desc: "감독님과 비밀리에 단독 면담을 신청하여 구단 차원의 가이드와 조언을 구합니다.",
+                success: "감독의 따뜻한 호통과 노련한 미디어 대처 노하우 덕분에 구단 프런트가 적극적으로 공식 쉴드를 쳐 주었습니다. 든든한 방어막으로 사태를 수습했습니다.",
+                failure: "감독은 사생활 관리를 하지 못한 점에 크게 실망하여 면담을 파투 냈고, 구단 역시 귀하를 엄벌하며 차가운 징계를 내렸습니다."
+            },
+            {
+                action: "훈련에 집중",
+                desc: "외부 미디어 노출과 스마트폰을 완전히 차단하고 오직 훈련장과 경기장에서 헌신적인 땀방울로 보답합니다.",
+                success: "논란 속에서도 입을 닫고 죽기 살기로 훈련하며 다음 시즌 완벽한 경기력 보강 태도를 보여 팬들이 감복하고 동정 여론을 형성했습니다.",
+                failure: "논란을 뒤로한 채 소통 없이 훈련장으로 도망치는 귀하의 독선적인 모습이 반성하지 않는 거만함으로 비쳐 여론의 화살이 더욱 날카로워졌습니다."
+            },
+            {
+                action: "에이전트를 통한 공식 사과",
+                desc: "선수 개인의 사적 노출을 피하고 법무팀과 에이전트가 정밀 작성한 격식 있는 대외 공식 사과문을 발표합니다.",
+                success: "법리적으로 정중하고 군더더기 없는 공적인 서면 발표가 팬들에게 신뢰감을 주어, 악의적인 루머가 빠르게 종식되었습니다.",
+                failure: "영혼 없는 대필 사과문이라는 여론이 형성되어 대중의 반발심만 더 키웠습니다."
+            },
+            {
+                action: "봉사활동 및 사회기부 약속",
+                desc: "자신의 성숙하지 못한 불찰을 성찰하는 뜻으로 연봉의 일부 기부 및 비시즌 봉사활동을 언론에 공표합니다.",
+                success: "진심 어린 사회적 반성과 즉각적인 실천적 봉사 행보를 본 대중들이 귀하의 실수를 너그럽게 용서하고 한 번 더 믿어보기로 격려해 주었습니다.",
+                failure: "위기를 돈으로 때우려 한다는 싸늘한 냉소와 함께 보여주기식 기부 쇼라는 비아냥을 받으며 여론의 비판이 가속화되었습니다."
+            }
+        ];
+
+        // GLOBAL GAME STATE VARIABLES
+        let gameState = {
+            name: "이유망",
+            position: "공격수",
+            backNumber: 10,
+            preferredFoot: "오른발",
+            archetypeId: "1",
+            isLegendary: false,
+            stats: {},
+            baseStats: {},
+            
+            age: 8,
+            reputation: 50,
+            team: "동네 축구교실",
+            salary: 10,
+            currentStageIndex: 0,
+            currentStageYear: 1,
+            
+            totalMatches: 0,
+            totalGoals: 0,
+            totalAssists: 0,
+            averageRatingSum: 0.0,
+            
+            isInjuredNextYear: false,
+            isRestingSeason: false,
+            
+            history: [],
+            lastSeasonRecord: null,
+            currentRoundRecord: null,
+            
+            isFullStatsShowing: false
+        };
+
+        // SETUP HELPER FUNCTIONS
+        function getStage() {
+            return STAGES[gameState.currentStageIndex];
+        }
+
+        function formatSalary(val, unit) {
+            if (unit === "만원") {
+                if (val >= 10000) {
+                    let eok = Math.floor(val / 10000);
+                    let man = val % 10000;
+                    return man === 0 ? `${eok}억 원` : `${eok}억 ${man.toLocaleString()} 만원`;
+                }
+                return `${val.toLocaleString()} 만원`;
+            }
+            return `${val} 억원`;
+        }
+
+        function getStageTeams(stageName, playerTeam) {
+            let teams = [];
+            if (stageName.includes("유소년")) teams = [...YOUTH_TEAMS];
+            else if (stageName.includes("미들")) teams = [...MIDDLE_TEAMS];
+            else if (stageName.includes("하이")) teams = [...HIGH_TEAMS];
+            else if (stageName.includes("2부")) teams = [...PRO2_TEAMS];
+            else teams = [...PRO1_TEAMS];
+
+            if (!teams.includes(playerTeam)) {
+                teams[teams.length - 1] = playerTeam;
+            }
+            return teams;
+        }
+
+        function showPage(id) {
+            document.getElementById("page-creation").classList.add("hidden");
+            document.getElementById("page-archetype").classList.add("hidden");
+            document.getElementById("page-dashboard").classList.add("hidden");
+            document.getElementById("page-match-engine").classList.add("hidden");
+            document.getElementById("page-standings").classList.add("hidden");
+            document.getElementById("page-match-details").classList.add("hidden");
+            document.getElementById("page-ending").classList.add("hidden");
+            
+            document.getElementById(id).classList.remove("hidden");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (id !== "page-creation" && id !== "page-archetype") {
+                document.getElementById("quick-status").classList.remove("hidden");
+                document.getElementById("header-age").innerText = gameState.age;
+                document.getElementById("header-team").innerText = gameState.team;
+            } else {
+                document.getElementById("quick-status").classList.add("hidden");
+            }
+        }
+
+        // ================= FLOW 1: CREATION AND SELECTION =================
+        function selectPosition(pos, element) {
+            gameState.position = pos;
+            document.querySelectorAll(".pos-btn").forEach(btn => {
+                btn.className = "pos-btn bg-slate-950 border border-slate-800 rounded-xl p-3 text-left transition-all text-slate-300";
+            });
+            element.className = "pos-btn bg-slate-950 border border-emerald-500 text-emerald-400 font-bold rounded-xl p-3 text-left transition-all";
+        }
+
+        function nextToArchetype() {
+            let nameInput = document.getElementById("input-name").value.trim();
+            if (nameInput) gameState.name = nameInput;
+            let numInput = parseInt(document.getElementById("input-backnumber").value);
+            if (numInput && numInput >= 1 && numInput <= 99) gameState.backNumber = numInput;
+            gameState.preferredFoot = document.getElementById("input-foot").value;
+
+            // Render archetype options
+            let archContainer = document.getElementById("archetype-list");
+            archContainer.innerHTML = "";
+            
+            for (let id in ARCHETYPES) {
+                let arch = ARCHETYPES[id];
+                let itemHtml = `
+                    <div onclick="selectArchetype('${id}')" id="arch-card-${id}" class="arch-card bg-slate-950 border border-slate-800 rounded-xl p-3.5 cursor-pointer transition-all space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-white">${arch.name}</span>
+                            <span class="text-[9px] bg-slate-900 px-2 py-0.5 rounded text-emerald-400 font-bold">보너스 적용</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-normal">${arch.desc}</p>
+                    </div>
+                `;
+                archContainer.innerHTML += itemHtml;
+            }
+
+            selectArchetype("1");
+            showPage("page-archetype");
+        }
+
+        function selectArchetype(id) {
+            gameState.archetypeId = id;
+            document.querySelectorAll(".arch-card").forEach(card => {
+                card.className = "arch-card bg-slate-950 border border-slate-800 rounded-xl p-3.5 cursor-pointer transition-all space-y-1";
+            });
+            let selectedCard = document.getElementById("arch-card-" + id);
+            if (selectedCard) {
+                selectedCard.className = "arch-card bg-slate-950 border border-emerald-500 rounded-xl p-3.5 cursor-pointer transition-all space-y-1";
+            }
+
+            gameState.isLegendary = false;
+            let arch = ARCHETYPES[id];
+            gameState.stats = { ...arch.stats };
+            gameState.baseStats = { ...arch.stats };
+
+            renderStatsSheet();
+        }
+
+        function renderStatsSheet() {
+            document.getElementById("sheet-player-name").innerText = gameState.name;
+            document.getElementById("current-arch-name").innerText = ARCHETYPES[gameState.archetypeId].name;
+            
+            let badge = document.getElementById("badge-legendary");
+            let panel = document.getElementById("stat-sheet-panel");
+            if (gameState.isLegendary) {
+                badge.innerText = "✨ 전설 (Legendary) 등급";
+                badge.className = "text-[9px] bg-amber-500 text-slate-950 py-0.5 px-2 rounded-full font-black";
+                panel.className = "bg-slate-950 border border-amber-500 rounded-2xl p-4 shadow-xl space-y-3 glowing-gold pulse-gold";
+            } else {
+                badge.innerText = "일반 유망주 등급";
+                badge.className = "text-[9px] bg-slate-800 text-slate-400 py-0.5 px-2 rounded-full font-bold";
+                panel.className = "bg-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3";
+            }
+
+            let grid = document.getElementById("stats-grid");
+            grid.innerHTML = "";
+            for (let stat in gameState.stats) {
+                let val = gameState.stats[stat];
+                let colorClass = val >= 75 ? "text-emerald-400 font-bold" : (val >= 55 ? "text-yellow-400 font-bold" : "text-slate-100");
+                grid.innerHTML += `
+                    <div class="flex justify-between border-b border-slate-900 pb-0.5">
+                        <span class="text-slate-400">${stat}</span>
+                        <span class="${colorClass}">${val}</span>
+                    </div>
+                `;
+            }
+        }
+
+        function rollStats() {
+            let baseline = gameState.baseStats;
+            let isLeg = Math.random() <= 0.10; // 10% Legendary status chance
+            gameState.isLegendary = isLeg;
+
+            if (isLeg) {
+                for (let k in gameState.stats) {
+                    gameState.stats[k] = Math.min(100, baseline[k] + Math.floor(Math.random() * 11) + 15);
+                }
+            } else {
+                for (let k in gameState.stats) {
+                    gameState.stats[k] = Math.max(1, Math.min(100, baseline[k] + Math.floor(Math.random() * 11) - 5));
+                }
+            }
+            renderStatsSheet();
+        }
+
+        function backToCreation() {
+            showPage("page-creation");
+        }
+
+        function confirmPlayerAndStart() {
+            gameState.team = gameState.isLegendary ? "새싹 FC" : "동네 축구교실";
+            gameState.salary = 10;
+            gameState.age = 8;
+            gameState.reputation = 50;
+            gameState.history = [];
+            gameState.lastSeasonRecord = null;
+            gameState.totalMatches = 0;
+            gameState.totalGoals = 0;
+            gameState.totalAssists = 0;
+            gameState.averageRatingSum = 0.0;
+            gameState.currentStageIndex = 0;
+            gameState.currentStageYear = 1;
+            
+            showDashboard();
+        }
+
+        // ================= FLOW 2: MAIN DASHBOARD & RE-ROLL =================
+        function showDashboard() {
+            document.getElementById("profile-name").innerText = gameState.name;
+            document.getElementById("profile-number").innerText = "#" + gameState.backNumber;
+            document.getElementById("profile-position").innerText = `${gameState.position} | 선호 주발: ${gameState.preferredFoot}`;
+            
+            document.getElementById("profile-stage-text").innerText = `${gameState.age}세 (${getStage().name} ${gameState.currentStageYear}년차)`;
+            document.getElementById("profile-team").innerText = gameState.team;
+            document.getElementById("profile-salary").innerText = formatSalary(gameState.salary, getStage().salary_unit);
+            document.getElementById("profile-rep").innerText = `${gameState.reputation} / 1000`;
+
+            let legendTag = document.getElementById("profile-legend-tag");
+            if (gameState.isLegendary) {
+                legendTag.classList.remove("hidden");
+            } else {
+                legendTag.classList.add("hidden");
+            }
+
+            // Statistics summary
+            document.getElementById("cum-matches").innerText = gameState.totalMatches;
+            document.getElementById("cum-goals").innerText = gameState.totalGoals;
+            document.getElementById("cum-assists").innerText = gameState.totalAssists;
+            let overallAvg = gameState.totalMatches > 0 ? (gameState.averageRatingSum / gameState.totalMatches).toFixed(2) : "0.00";
+            document.getElementById("cum-rating").innerText = overallAvg;
+
+            renderDashboardStats();
+            renderActionBoard();
+            showPage("page-dashboard");
+        }
+
+        function toggleFullStats() {
+            gameState.isFullStatsShowing = !gameState.isFullStatsShowing;
+            document.getElementById("btn-stats-toggle").innerText = gameState.isFullStatsShowing ? "접기 🔼" : "전체보기 🔽";
+            renderDashboardStats();
+        }
+
+        function renderDashboardStats() {
+            let container = document.getElementById("dashboard-stats-grid");
+            container.innerHTML = "";
+            let keys = Object.keys(gameState.stats);
+            
+            let priorityStats = ["골 결정력", "침착성", "가속도", "주력", "판단력", "지구력"];
+            if (gameState.position === "미드필더") priorityStats = ["패스", "시야", "판단력", "개인기", "지구력", "승부욕"];
+            if (gameState.position === "수비수") priorityStats = ["몸싸움", "판단력", "승부욕", "지구력", "타고난 체력", "주력"];
+            if (gameState.position === "골키퍼") priorityStats = ["판단력", "지구력", "침착성", "승부욕", "타고난 체력", "몸싸움"];
+
+            let renderKeys = gameState.isFullStatsShowing ? keys : priorityStats;
+
+            renderKeys.forEach(k => {
+                let v = gameState.stats[k];
+                let widthPercent = Math.max(1, v);
+                let barColor = "bg-emerald-500";
+                if (v < 55) barColor = "bg-slate-600";
+                else if (v < 75) barColor = "bg-yellow-500";
+                
+                container.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span class="font-bold text-slate-300">${k}</span>
+                            <span>${v}</span>
+                        </div>
+                        <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+                            <div class="h-full ${barColor}" style="width: ${widthPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderActionBoard() {
+            let container = document.getElementById("action-interactive-content");
+            container.innerHTML = "";
+            
+            let stage = getStage();
+            
+            let repSalary = 10;
+            if (stage.name.startsWith("프로")) {
+                repSalary = Math.max(3000, Math.floor(gameState.reputation * 35));
+            } else {
+                let scaleFactor = stage.name.includes("유소년") ? 1.5 : (stage.name.includes("미들") ? 2.0 : 3.0);
+                repSalary = Math.max(stage.name.includes("유소년") ? 50 : (stage.name.includes("미들") ? 150 : 300), Math.floor(gameState.reputation * scaleFactor));
+            }
+            
+            let baseSalaryOffer = Math.max(repSalary, Math.floor(gameState.salary * 1.10));
+
+            if (gameState.isInjuredNextYear) {
+                document.getElementById("rehab-banner").classList.remove("hidden");
+                document.getElementById("action-board-title").innerText = "🏥 부상 메디컬 재활 훈련";
+                
+                gameState.salary = baseSalaryOffer;
+
+                container.innerHTML = `
+                    <p class="text-[11px] text-red-400 leading-normal font-semibold">
+                        지난해 경기 중 장기 정밀 부상을 당해 다음 1년 간은 재활 및 휴식이 필요합니다. <br>
+                        소속팀 [${gameState.team}]과의 계약 상태 하에 10% 상승한 연봉 <span class="text-yellow-400 font-bold">${formatSalary(gameState.salary, stage.salary_unit)}</span>을 수령하며 요양에 전념합니다.
+                    </p>
+                    <div class="grid grid-cols-3 gap-1.5 pt-2 text-[10px]">
+                        <button onclick="conductRehab('휴식')" class="bg-slate-950 border border-slate-800 p-2 rounded-xl text-left transition-all active:bg-slate-900">
+                            🌿 <strong>휴식</strong><br>안정을 취합니다.
+                        </button>
+                        <button onclick="conductRehab('훈련')" class="bg-slate-950 border border-slate-800 p-2 rounded-xl text-left transition-all active:bg-slate-900">
+                            🏃 <strong>훈련</strong><br>가벼운 운동.
+                        </button>
+                        <button onclick="conductRehab('치료')" class="bg-slate-950 border border-slate-800 p-2 rounded-xl text-left transition-all active:bg-slate-900">
+                            🩺 <strong>치료</strong><br>집중 케어.
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById("rehab-banner").classList.add("hidden");
+            document.getElementById("action-board-title").innerText = "📜 계약 갱신 및 거취 제안";
+
+            // Transitions checks based on age
+            let stageSwitch = false;
+            let switchHtml = "";
+            let avgRating = gameState.lastSeasonRecord ? getStageAverageRating(getStage().name) : 6.0;
+
+            if (gameState.age === 14 && stage.name.includes("유소년기")) {
+                stageSwitch = true;
+                let options = [
+                    { name: "신라중 FC (S급 명문중)", req: 6.7, sal: 350, mod: 1.30 },
+                    { name: "강북중 축구부 (A급 우수중)", req: 6.2, sal: 250, mod: 1.10 },
+                    { name: "한밭중 스포르트 (B급 일반중)", req: 5.7, sal: 180, mod: 0.90 },
+                    { name: "해동중 축구부 (C급 지역중)", req: 4.0, sal: 120, mod: 0.70 }
+                ];
+                switchHtml = renderSchoolTransitionPanel("미들스쿨 (Middle School)", options, 1, baseSalaryOffer, avgRating);
+            }
+            else if (gameState.age === 17 && stage.name.includes("미들스쿨")) {
+                stageSwitch = true;
+                let options = [
+                    { name: "광양제철고 FC (S급 명문고)", req: 6.8, sal: 700, mod: 1.30 },
+                    { name: "동북고 축구클럽 (A급 우수고)", req: 6.3, sal: 500, mod: 1.10 },
+                    { name: "부평고 체육단 (B급 일반고)", req: 5.8, sal: 350, mod: 0.90 },
+                    { name: "현풍고 스쿼드 (C급 지역고)", req: 4.0, sal: 200, mod: 0.70 }
+                ];
+                switchHtml = renderSchoolTransitionPanel("하이스쿨 (High School)", options, 2, baseSalaryOffer, avgRating);
+            }
+            else if (gameState.age === 20 && stage.name.includes("하이스쿨")) {
+                stageSwitch = true;
+                if (avgRating >= 7.0) {
+                    let pool = [...PRO1_TEAMS];
+                    let r1 = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
+                    let r2 = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
+                    let r3 = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
+                    let options = [
+                        { name: r1, sal: Math.max(30000, Math.floor(baseSalaryOffer * 1.35)) },
+                        { name: r2, sal: Math.max(30000, Math.floor(baseSalaryOffer * 1.20)) },
+                        { name: r3, sal: Math.max(30000, Math.floor(baseSalaryOffer * 1.05)) }
+                    ];
+                    switchHtml = `
+                        <div class="space-y-2 text-xs">
+                            <p class="text-[11px] bg-amber-500/10 border border-amber-500/20 text-amber-400 p-2.5 rounded-xl leading-normal">
+                                🔥 <strong>[명가 직행 입단 오퍼!]</strong><br>
+                                하이스쿨 통산 평균 평점 <strong class="text-white">${avgRating.toFixed(2)}</strong>을 돌파하여, K리그 1부리그 최고 명문 구단 3곳에서 직행 이적 러브콜 제안서가 날아왔습니다!
+                            </p>
+                            <div class="space-y-1.5">
+                                ${options.map((opt, i) => `
+                                    <button onclick="joinProDirect('${opt.name}', ${opt.sal}, 4)" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-left transition-all flex justify-between items-center active:bg-slate-900">
+                                        <span>🦁 <strong>${opt.name}</strong></span>
+                                        <span class="text-emerald-400 font-extrabold">${formatSalary(opt.sal, "만원")}</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    let options = [
+                        { name: "울산 HD FC", desc: "S급 우승 구단", req: 6.8, sal: 35000, mod: 1.40, idx: 4 },
+                        { name: "FC 서울", desc: "A급 전통 구단", req: 6.4, sal: 25000, mod: 1.20, idx: 4 },
+                        { name: "수원 삼성 블루윙즈", desc: "K2 초대형 기업 구단", req: 5.8, sal: 18000, mod: 1.00, idx: 3 },
+                        { name: "부산 아이파크", desc: "K2 전통 구단", req: 5.2, sal: 10000, mod: 0.80, idx: 3 },
+                        { name: "충남아산 FC", desc: "K2 시민 구단", req: 4.0, sal: 5000, mod: 0.60, idx: 3 }
+                    ];
+                    switchHtml = `
+                        <div class="space-y-2 text-xs">
+                            <p class="text-[11px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-2.5 rounded-xl leading-normal">
+                                🎓 <strong>[신인 드래프트] 지원가능 구단</strong><br>
+                                하이스쿨 졸업과 동시에 입단할 프로 구단을 결정해 드래프트를 신청하세요.
+                            </p>
+                            <div class="space-y-1.5 max-h-[220px] overflow-y-auto">
+                                ${options.map((opt, i) => {
+                                    let allowed = avgRating >= opt.req;
+                                    let adjustedSalary = Math.max(opt.sal, Math.floor(baseSalaryOffer * opt.mod));
+                                    let btnAction = allowed ? `onclick="joinProDirect('${opt.name}', ${adjustedSalary}, ${opt.idx})"` : "";
+                                    let disabledClass = allowed ? "bg-slate-950 border-slate-800 cursor-pointer active:bg-slate-900" : "bg-slate-950/40 border-slate-900/60 opacity-40 cursor-not-allowed";
+                                    return `
+                                        <div class="p-2 border rounded-xl flex justify-between items-center ${disabledClass}" ${btnAction}>
+                                            <div>
+                                                <div class="font-extrabold text-white text-[11px]">${opt.name}</div>
+                                                <div class="text-[9px] text-slate-500">요구 하이스쿨 평점: ${opt.req.toFixed(1)}</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-emerald-400 font-extrabold text-[11px]">${formatSalary(adjustedSalary, "만원")}</div>
+                                                <div class="text-[9px] ${allowed ? 'text-emerald-400 font-bold' : 'text-red-500'}">${allowed ? '지원 가능' : '지원 불가'}</div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (stageSwitch) {
+                container.innerHTML = switchHtml;
+                return;
+            }
+
+            // Normal renew option triggers
+            let lastRating = gameState.lastSeasonRecord ? gameState.lastSeasonRecord.avg_rating : 6.0;
+            // Max raise cap halved per user feedback to 12% [Grounded on v24]
+            let maxRaisePercent = Math.max(0, Math.min(12, Math.floor((lastRating - 6.0) * 12)));
+
+            let renewHtml = `
+                <div class="space-y-2 text-xs">
+                    <div class="space-y-1.5">
+                        <button onclick="handleContractRenew('renew', ${baseSalaryOffer})" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-left transition-all flex justify-between items-center active:bg-slate-900">
+                            <span>🤝 <strong>기본 조건 재계약</strong></span>
+                            <span class="text-emerald-400 font-bold">${formatSalary(baseSalaryOffer, stage.salary_unit)}</span>
+                        </button>
+
+                        ${gameState.lastSeasonRecord && maxRaisePercent > 0 ? `
+                            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-2">
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span>⚖️ <strong>연봉 인상 협상 요구</strong> (최대 +${maxRaisePercent}%)</span>
+                                    <span class="text-slate-400">평점 ${lastRating.toFixed(2)} 기준</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="number" id="input-raise" min="0" max="${maxRaisePercent}" value="${maxRaisePercent}" class="bg-slate-900 border border-slate-800 px-3 rounded text-white text-xs w-20">
+                                    <button onclick="handleContractRenew('negotiate', ${baseSalaryOffer})" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black px-4 rounded-xl text-[10px] transition-all flex-grow active:scale-[0.98]">
+                                        협상 시도하기
+                                    </button>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="bg-slate-950/40 border border-slate-900/60 p-3 rounded-xl text-slate-500 text-[10px]">
+                                ⚖️ 연봉 협상 불가 (직전 시즌 활약이 부족하거나 연차 이력이 없습니다)
+                            </div>
+                        `}
+
+                        <button onclick="openTransferMarket(${baseSalaryOffer})" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl text-left transition-all flex justify-between items-center active:bg-slate-900">
+                            <span>✈️ <strong>다른 구단 이적 타진</strong></span>
+                            <span class="text-cyan-400 font-bold">이적 시장 오픈</span>
+                        </button>
+
+                        <button onclick="retireFromField()" class="w-full bg-slate-950/40 hover:bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl text-left transition-all text-[11px]">
+                            ❌ <strong>그라운드 공식 은퇴 신청</strong>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = renewHtml;
+        }
+
+        function renderSchoolTransitionPanel(stageName, options, transitionIndex, baseOffer, avgRating) {
+            let linkedSalary = Math.max(Math.floor(gameState.salary * 1.10), (transitionIndex === 1 ? 50 : 150));
+            return `
+                <div class="space-y-2">
+                    <p class="text-[10px] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 p-2 rounded-lg leading-normal">
+                        🎓 <strong>[학업 진학] ${stageName} 진입</strong><br>
+                        이전 무대 통산 평균 평점: <strong class="text-white">${avgRating.toFixed(2)}</strong><br>
+                        이관 최저 연차 보장 연봉: <strong class="text-white">${formatSalary(linkedSalary, "만원")}</strong>
+                    </p>
+                    <div class="space-y-1.5">
+                        ${options.map((opt, i) => {
+                            let adjustedSalary = Math.max(opt.sal, Math.floor(linkedSalary * opt.mod));
+                            let allowed = avgRating >= opt.req;
+                            let btnAction = allowed ? `onclick="joinProDirect('${opt.name}', ${adjustedSalary}, ${transitionIndex})"` : "";
+                            let disabledClass = allowed ? "bg-slate-950 border-slate-800 cursor-pointer active:bg-slate-900" : "bg-slate-950/40 border-slate-900/60 opacity-40 cursor-not-allowed";
+                            return `
+                                <div class="p-2 border rounded-xl flex justify-between items-center ${disabledClass}" ${btnAction}>
+                                    <div>
+                                        <div class="font-bold text-white text-[11px]">${opt.name}</div>
+                                        <div class="text-[9px] text-slate-500">진학 요구 평점: ${opt.req.toFixed(1)}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-emerald-400 font-extrabold text-[11px]">${formatSalary(adjustedSalary, "만원")}</div>
+                                        <div class="text-[9px] ${allowed ? 'text-emerald-400 font-bold' : 'text-red-500'}">${allowed ? '지원 가능' : '지원 불가'}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStageAverageRating(stageName) {
+            let matches = gameState.history.filter(h => h.stage === stageName);
+            if (matches.length === 0) return 6.0;
+            let sum = matches.reduce((acc, curr) => acc + curr.avg_rating, 0);
+            return sum / matches.length;
+        }
+
+        // ================= FLOW 3: TRANSITIONS AND EVENTS =================
+        function joinProDirect(teamName, salaryInManwon, targetStageIdx) {
+            gameState.team = teamName;
+            gameState.salary = salaryInManwon;
+            gameState.currentStageIndex = targetStageIdx;
+            gameState.currentStageYear = 1;
+
+            alert(`🎉 [입단 체결 완료] ${gameState.name} 선수는 성공적으로 [${gameState.team}] 에 입단하였습니다!`);
+            simulateMatchesEngine();
+        }
+
+        function conductRehab(method) {
+            let percent = 0;
+            let r = Math.random() * 100;
+            if (method === "휴식") {
+                percent = r < 40 ? 0 : (r < 80 ? 1 : 2);
+            } else if (method === "훈련") {
+                percent = r < 30 ? 0 : (r < 70 ? 1 : 2);
+            } else {
+                percent = r < 20 ? 0 : (r < 60 ? 1 : 2);
+            }
+
+            let logMsg = "";
+            let restoredStats = [];
+            if (percent > 0) {
+                for (let k in gameState.stats) {
+                    let gain = Math.max(1, Math.floor(gameState.stats[k] * (percent / 100)));
+                    gameState.stats[k] = Math.min(100, gameState.stats[k] + gain);
+                    restoredStats.push(`${k}(+${gain})`);
+                }
+                logMsg = `🎉 [재활 가속화 성공] 전체 능력치가 ${percent}% 안전 복구되었습니다! (복구: ${restoredStats.slice(0,3).join(', ')} 등)`;
+            } else {
+                logMsg = `❌ [재활 수치 변화 없음] 아쉽게도 환부 치료 효과가 낮아 능력치 변화가 없습니다.`;
+            }
+
+            let stage = getStage();
+            let yearRecord = {
+                age: gameState.age,
+                stage: stage.name,
+                year_in_stage: gameState.currentStageYear,
+                team: gameState.team,
+                matches: 0,
+                goals: 0,
+                assists: 0,
+                avg_rating: 0.0,
+                rep: gameState.reputation,
+                salary: gameState.salary,
+                grown_stats: [],
+                declined_stats: [],
+                is_resting: true,
+                rehab_method: method,
+                rehab_log: logMsg,
+                matches_detail: []
+            };
+
+            gameState.history.push(yearRecord);
+            gameState.lastSeasonRecord = yearRecord;
+
+            gameState.age++;
+            gameState.currentStageYear++;
+            gameState.isInjuredNextYear = false;
+
+            alert(logMsg);
+            showDashboard();
+        }
+
+        function handleContractRenew(mode, baseOffer) {
+            let stage = getStage();
+            if (mode === "renew") {
+                gameState.salary = baseOffer;
+                alert(`🤝 현재 팀 [${gameState.team}]과의 1년 계약 갱신 옵션이 성사되었습니다.`);
+                simulateMatchesEngine();
+            } else if (mode === "negotiate") {
+                let reqRaise = parseInt(document.getElementById("input-raise").value);
+                let lastRating = gameState.lastSeasonRecord ? gameState.lastSeasonRecord.avg_rating : 6.0;
+                let maxCap = Math.max(0, Math.min(12, Math.floor((lastRating - 6.0) * 12))); // capped to 12% [Grounded on v24]
+
+                if (isNaN(reqRaise) || reqRaise < 0) {
+                    alert("❌ 올바른 숫자를 입력하세요.");
+                    return;
+                }
+
+                if (reqRaise > maxCap) {
+                    // Greedy failure: reputation decreases -25 in Pro, -10 in school
+                    let penalty = stage.name.startsWith("프로") ? 25 : 10;
+                    gameState.reputation = Math.max(10, gameState.reputation - penalty);
+                    gameState.salary = baseOffer;
+                    alert(`❌ [협상 결렬] 터무니없이 과도한 인상을 요구했습니다! 구단이 극도로 불만을 표하며 협상을 파투냈습니다. (명성 -${penalty} 감점 및 기본 제시 연봉 강제 서명)`);
+                    simulateMatchesEngine();
+                    return;
+                }
+
+                // 30% chance of rejection
+                if (Math.random() <= 0.30) {
+                    let penalty = stage.name.startsWith("프로") ? 15 : 5;
+                    gameState.reputation = Math.max(10, gameState.reputation - penalty);
+                    gameState.salary = baseOffer;
+                    alert(`❌ [협상 거부] 구단 수뇌부가 인상안을 거절했습니다! 예산 캡의 벽에 막혔습니다. (명성 -${penalty} 감점 및 기본 연봉 강제 서명)`);
+                } else {
+                    gameState.salary = Math.floor(baseOffer * (1 + reqRaise / 100));
+                    alert(`🎉 [협상 타결] 당신의 가치를 인정한 이사회가 사인에 서명했습니다! (연봉 ${reqRaise}% 인상 성공)`);
+                }
+                simulateMatchesEngine();
+            }
+        }
+
+        function openTransferMarket(baseOffer) {
+            let stage = getStage();
+            let pool = stage.name.includes("유소년") ? YOUTH_TEAMS : 
+                       (stage.name.includes("미들") ? MIDDLE_TEAMS : 
+                       (stage.name.includes("하이") ? HIGH_TEAMS : 
+                       (stage.name.includes("2부") ? PRO2_TEAMS : PRO1_TEAMS)));
+
+            // Interested offers chance calculation [Grounded on v21]
+            let overallAvg = gameState.totalMatches > 0 ? (gameState.averageRatingSum / gameState.totalMatches) : 6.5;
+            let totalStatKeys = Object.keys(gameState.stats);
+            let avgStatVal = totalStatKeys.reduce((acc, curr) => acc + gameState.stats[curr], 0) / totalStatKeys.length;
+            
+            let baseChance = 30 + (gameState.reputation / 8);
+            let ratingMult = Math.max(0.5, 1.0 + (overallAvg - 6.5) * 0.5);
+            let statMult = Math.max(0.5, 1.0 + (avgStatVal - 60) / 100.0);
+            let legendBonus = gameState.isLegendary ? 25 : 0;
+            
+            let transferChance = Math.floor((baseChance * ratingMult * statMult) + legendBonus);
+            transferChance = Math.max(10, Math.min(95, transferChance));
+
+            if (Math.random() * 100 > transferChance) {
+                // Transfer failure: decrease reputation by -20 in Pro, -8 in school [Grounded on v26]
+                let penalty = stage.name.startsWith("프로") ? 20 : 8;
+                gameState.reputation = Math.max(10, gameState.reputation - penalty);
+                gameState.salary = baseOffer; // links baseOffer safely
+                alert(`❌ [이적 실패] 아쉽게도 현재 귀하의 조건에 매력을 느낀 구단의 제안이 오지 않았습니다. (명성 -${penalty} 감점 및 기존 연봉 자동 연장)`);
+                simulateMatchesEngine();
+                return;
+            }
+
+            let interested = [];
+            let shuffled = [...pool].filter(t => t !== gameState.team);
+            for (let i=0; i<3; i++) {
+                if (shuffled.length === 0) break;
+                let idx = Math.floor(Math.random() * shuffled.length);
+                interested.push(shuffled.splice(idx, 1)[0]);
+            }
+
+            let container = document.getElementById("action-interactive-content");
+            container.innerHTML = `
+                <p class="text-[10px] text-cyan-400 leading-normal font-semibold">
+                    ✈️ 정식 영입 오퍼를 보내온 클럽 리스트입니다. (이적 성공확률 ${transferChance}% 통과)
+                </p>
+                <div class="space-y-1.5 text-xs">
+                    ${interested.map((club, i) => {
+                        let factor = 1.0 + (Math.random() * 0.5 - 0.1);
+                        let offerSalary = Math.max(stage.name.startsWith("프로") ? 15000 : 10, Math.floor(baseOffer * factor));
+                        return `
+                            <button onclick="joinProDirect('${club}', ${offerSalary}, ${gameState.currentStageIndex})" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-left transition-all flex justify-between items-center active:bg-slate-900">
+                                <span>✈️ [오퍼] <strong>${club}</strong></span>
+                                <span class="text-emerald-400 font-extrabold">${formatSalary(offerSalary, stage.salary_unit)}</span>
+                            </button>
+                        `;
+                    }).join('')}
+                    
+                    <button onclick="renderActionBoard()" class="w-full bg-slate-800 text-slate-300 py-2 rounded-xl text-[10px] transition-all">
+                        이적 제안 취소하고 잔류하기 ↩️
+                    </button>
+                </div>
+            `;
+        }
+
+        function retireFromField() {
+            triggerEnding();
+        }
+
+        // ================= FLOW 4: MATCH ENGINE WORK =================
+        function simulateMatchesEngine() {
+            showPage("page-match-engine");
+            document.getElementById("btn-matches-done").disabled = true;
+            document.getElementById("btn-matches-done").classList.add("cursor-not-allowed");
+            document.getElementById("btn-matches-done").classList.replace("bg-emerald-500", "bg-slate-800");
+            document.getElementById("btn-matches-done").classList.replace("text-slate-950", "text-slate-400");
+
+            let consoleView = document.getElementById("commentary-console");
+            consoleView.innerHTML = "";
+
+            let stage = getStage();
+            let matches = stage.matches_per_year;
+            let diff = stage.difficulty;
+
+            // Stats ratios using 2.5 power scaling for Legends [Grounded on v17]
+            let goalStatRatio = (gameState.stats["골 결정력"] * 2.0 +
+                                 gameState.stats["침착성"] * 1.5 +
+                                 gameState.stats["위치선정"] * 1.5 +
+                                 gameState.stats["가속도"] * 1.0 +
+                                 gameState.stats["몸싸움"] * 0.8) / 350.0;
+
+            let assistStatRatio = (gameState.stats["패스"] * 2.0 +
+                                   gameState.stats["시야"] * 2.0 +
+                                   gameState.stats["개인기"] * 1.2 +
+                                   gameState.stats["판단력"] * 1.2) / 320.0;
+
+            // Power factor 2.5 curve
+            goalStatRatio = Math.pow(goalStatRatio, 2.5);
+            assistStatRatio = Math.pow(assistStatRatio, 2.5);
+
+            let baseLambdaG = 0.15;
+            let baseLambdaA = 0.15;
+            if (gameState.position === "공격수") { baseLambdaG = 0.42; baseLambdaA = 0.15; }
+            else if (gameState.position === "윙어") { baseLambdaG = 0.28; baseLambdaA = 0.32; }
+            else if (gameState.position === "미드필더") { baseLambdaG = 0.15; baseLambdaA = 0.38; }
+            else if (gameState.position === "수비수") { baseLambdaG = 0.05; baseLambdaA = 0.10; }
+            else if (gameState.position === "골키퍼") { baseLambdaG = 0.001; baseLambdaA = 0.002; }
+
+            let diffMultiplier = diff * 1.35;
+            let lambdaG = Math.max(0.0005, (baseLambdaG * goalStatRatio) / diffMultiplier);
+            let lambdaA = Math.max(0.0010, (baseLambdaA * assistStatRatio) / diffMultiplier);
+
+            let teams = getStageTeams(stage.name, gameState.team);
+            let standings = {};
+            teams.forEach(t => {
+                standings[t] = { W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 }; // Initialized Draw to D (Uppercase) correctly!
+            });
+
+            let otherStrikers = {};
+            teams.forEach(t => {
+                if (t !== gameState.team) {
+                    otherStrikers[t] = { name: t + "의 간판 공격수", goals: 0 };
+                }
+            });
+
+            let goals = 0;
+            let assists = 0;
+            let ratingSum = 0.0;
+            let matchesDetail = [];
+
+            let ballElement = document.getElementById("anim-ball");
+            let animText = document.getElementById("anim-status-text");
+            let bounceTicks = 0;
+            let ballPosLeft = true;
+
+            document.getElementById("match-sim-ourteam").innerText = `${gameState.team} (우리 팀)`;
+
+            let intervalId = setInterval(() => {
+                ballPosLeft = !ballPosLeft;
+                ballElement.style.left = ballPosLeft ? "0%" : "95%";
+                
+                let commentText = ["⚽ 전반전 역습 찬스 돌파 중...", "⚽ 박스 안 경합 치열하게 전개 중...", "⚽ 크로스 헤더 슈팅 시도!", "⚽ 후반전 중원 사령 지휘 전개 중..."][bounceTicks % 4];
+                animText.innerText = commentText;
+
+                bounceTicks++;
+                if (bounceTicks >= 12) {
+                    clearInterval(intervalId);
+                    completeSimulation();
+                }
+            }, 250);
+
+            function completeSimulation() {
+                // Round-Robin Scheduler to ensure all teams play exactly identical round matches [Differentiates Standings]
+                let tempTeams = [...teams];
+                let n_teams = tempTeams.length;
+                let roundsSchedule = [];
+                
+                // Duplicate cycles to hit exact match counts
+                while (roundsSchedule.length < matches) {
+                    for (let r = 0; r < n_teams - 1; r++) {
+                        let roundMatches = [];
+                        for (let i = 0; i < n_teams / 2; i++) {
+                            let t1 = tempTeams[i];
+                            let t2 = tempTeams[n_teams - 1 - i];
+                            roundMatches.push(Math.random() < 0.5 ? [t1, t2] : [t2, t1]);
+                        }
+                        tempTeams = [tempTeams[0], tempTeams[n_teams - 1], ...tempTeams.slice(1, n_teams - 1)]; // Fixed nesting bug!
+                        roundsSchedule.push(roundMatches);
+                        if (roundsSchedule.length >= matches) break;
+                    }
+                }
+
+                let roundIdx = 1;
+                roundsSchedule.forEach(roundMatches => {
+                    let playerMatch = null;
+                    roundMatches.forEach(m => {
+                        if (m[0] === gameState.team || m[1] === gameState.team) {
+                            playerMatch = m;
+                        }
+                    });
+
+                    roundMatches.forEach(m => {
+                        let t1 = m[0];
+                        let t2 = m[1];
+
+                        if (m === playerMatch) {
+                            let oppTeam = t1 === gameState.team ? t2 : t1;
+
+                            let m_g = poissonDraw(lambdaG);
+                            let m_a = poissonDraw(lambdaA);
+                            goals += m_g;
+                            assists += m_a;
+
+                            // Match Rating base 6.5, GK -0.2
+                            let staminaBonus = (gameState.stats["지구력"] - 50) * 0.004;
+                            let decisionBonus = (gameState.stats["판단력"] - 50) * 0.004;
+                            let fightBonus = (gameState.stats["승부욕"] - 50) * 0.002;
+
+                            let mRating = 6.5 + (m_g * 1.0) + (m_a * 0.5) + staminaBonus + decisionBonus + fightBonus;
+                            if (gameState.position === "골키퍼") {
+                                mRating += (gameState.stats["판단력"] + gameState.stats["지구력"]) * 0.004 - 0.2;
+                            }
+                            mRating += (Math.random() * 1.0 - 0.5);
+                            mRating = Math.max(4.0, Math.min(10.0, mRating));
+                            ratingSum += mRating;
+
+                            // Dynamic weights logic to replace broken array notation [v24 bugs fixed]
+                            let opp_base_prob = diff < 1.5 ? [40, 40, 15, 5] : [30, 40, 20, 10];
+                            let extraGoals = weightedRandomSelect([50, 35, 12, 3]);
+                            let ourGoals = m_g + extraGoals;
+                            let oppGoals = weightedRandomSelect(opp_base_prob);
+
+                            // Apply Goals For and Goals Against correctly
+                            standings[t1].GF += (t1 === gameState.team ? ourGoals : oppGoals);
+                            standings[t1].GA += (t1 === gameState.team ? oppGoals : ourGoals);
+                            standings[t2].GF += (t2 === gameState.team ? ourGoals : oppGoals);
+                            standings[t2].GA += (t2 === gameState.team ? oppGoals : ourGoals);
+
+                            let p_goals = t1 === gameState.team ? ourGoals : oppGoals;
+                            let o_goals = t1 === gameState.team ? oppGoals : ourGoals;
+
+                            if (p_goals > o_goals) {
+                                standings[t1].W++;
+                                standings[t2].L++;
+                            } else if (p_goals === o_goals) {
+                                standings[t1].D++;
+                                standings[t2].D++;
+                            } else {
+                                standings[t1].L++;
+                                standings[t2].W++;
+                            }
+
+                            matchesDetail.push({
+                                round: roundIdx,
+                                opponent: oppTeam,
+                                score: `${ourGoals} - ${oppGoals}`,
+                                result: ourGoals > oppGoals ? "승" : (ourGoals === oppGoals ? "무" : "패"),
+                                goals: m_g,
+                                assists: m_a,
+                                rating: mRating
+                            });
+                        } else {
+                            // Non-player match simulations to populate other club standings properly [v25 fixed]
+                            let r1 = TEAM_RATINGS[t1] || 60;
+                            let r2 = TEAM_RATINGS[t2] || 60;
+                            r1 += 4; // home advantage
+                            let l1 = Math.max(0.4, (r1 / 65.0) / diff);
+                            let l2 = Math.max(0.4, (r2 / 65.0) / diff);
+
+                            let g1 = poissonDraw(l1);
+                            let g2 = poissonDraw(l2);
+
+                            standings[t1].GF += g1;
+                            standings[t1].GA += g2;
+                            standings[t2].GF += g2;
+                            standings[t2].GA += g1;
+
+                            if (g1 > g2) {
+                                standings[t1].W++;
+                                standings[t2].L++;
+                            } else if (g1 === g2) {
+                                standings[t1].D++;
+                                standings[t2].D++;
+                            } else {
+                                standings[t1].L++;
+                                standings[t2].W++;
+                            }
+
+                            if (g1 > 0) {
+                                otherStrikers[t1].goals += Math.max(0, Math.floor(g1 * (Math.random() * 0.5 + 0.3)));
+                            }
+                            if (g2 > 0) {
+                                otherStrikers[t2].goals += Math.max(0, Math.floor(g2 * (Math.random() * 0.5 + 0.3)));
+                            }
+                        }
+                    });
+                    roundIdx++;
+                });
+
+                // Calculate final points cleanly with correctly matching Draws
+                for (let t in standings) {
+                    standings[t].Pts = standings[t].W * 3 + standings[t].D;
+                }
+
+                let standingsList = [];
+                for (let t in standings) {
+                    let st = standings[t];
+                    standingsList.push({
+                        team: t, W: st.W, D: st.D, L: st.L, GF: st.GF, GA: st.GA, GD: st.GF - st.GA, Pts: st.Pts
+                    });
+                }
+                standingsList.sort((a,b) => {
+                    if (b.Pts !== a.Pts) return b.Pts - a.Pts;
+                    if (b.GD !== a.GD) return b.GD - a.GD;
+                    return b.GF - a.GF;
+                });
+
+                let scorerRank = [{ name: `${gameState.name} (No.${gameState.backNumber})`, team: gameState.team, goals: goals }];
+                for (let t in otherStrikers) {
+                    scorerRank.push({ name: otherStrikers[t].name, team: t, goals: otherStrikers[t].goals });
+                }
+                scorerRank.sort((a,b) => b.goals - a.goals);
+
+                let avgRating = ratingSum / matches;
+
+                gameState.totalMatches += matches;
+                gameState.totalGoals += goals;
+                gameState.totalAssists += assists;
+                gameState.averageRatingSum += ratingSum;
+
+                // Reputation calc (criteria base avgRating 6.6)
+                let repGain = Math.floor((avgRating - 6.6) * 18 + (goals * 1.8) + (assists * 1.3));
+                if (stage.name.includes("유소년기")) {
+                    repGain = Math.max(-5, Math.min(15, repGain));
+                } else if (stage.name.includes("미들") || stage.name.includes("하이")) {
+                    repGain = Math.max(-10, Math.min(25, repGain));
+                } else {
+                    repGain = Math.max(-35, Math.min(75, repGain));
+                }
+                gameState.reputation = Math.max(10, Math.min(1000, gameState.reputation + repGain));
+
+                // Stats Growth and aging [Grounded on v5]
+                let growthPoints = 0;
+                if (gameState.age < 14) growthPoints = Math.floor(Math.random() * 4) + 3;
+                else if (gameState.age < 18) growthPoints = Math.floor(Math.random() * 4) + 2;
+                else if (gameState.age < 23) growthPoints = Math.floor(Math.random() * 3) + 1;
+                else if (gameState.age >= 32) growthPoints = -Math.floor(Math.random() * 4) - 1;
+
+                let grownStats = [];
+                let declinedStats = [];
+                let statKeys = Object.keys(gameState.stats);
+                
+                if (growthPoints > 0) {
+                    for (let i = 0; i < growthPoints; i++) {
+                        let sk = statKeys[Math.floor(Math.random() * statKeys.length)];
+                        if (gameState.stats[sk] < 100) {
+                            let gainVal = Math.floor(Math.random() * 3) + 2;
+                            gameState.stats[sk] = Math.min(100, gameState.stats[sk] + gainVal);
+                            grownStats.push(`${sk}(+${gainVal})`);
+                        }
+                    }
+                } else if (growthPoints < 0) {
+                    let declinePool = ["가속도", "주력", "지구력", "몸싸움", "타고난 체력"];
+                    for (let i = 0; i < Math.abs(growthPoints); i++) {
+                        let sk = declinePool[Math.floor(Math.random() * declinePool.length)];
+                        if (gameState.stats[sk] > 25) {
+                            let decVal = Math.floor(Math.random() * 4) + 2;
+                            gameState.stats[sk] = Math.max(1, gameState.stats[sk] - decVal);
+                            declinedStats.push(`${sk}(-${decVal})`);
+                        }
+                    }
+                }
+
+                // SNS Events: 50% trigger [Grounded on v27/28]
+                let snsEvent = null;
+                if (Math.random() <= 0.50) {
+                    let isBad = (gameState.age >= 20) ? Math.random() <= 0.50 : false;
+                    
+                    if (isBad) {
+                        let desc = SNS_BAD_EVENTS[Math.floor(Math.random() * SNS_BAD_EVENTS.length)];
+                        snsEvent = { type: "부정", desc: desc, penalty: "대처에 따라 변동", pending: true };
+                    } else {
+                        let desc = SNS_GOOD_EVENTS[Math.floor(Math.random() * SNS_GOOD_EVENTS.length)];
+                        for (let k in gameState.stats) {
+                            let gain = Math.max(1, Math.floor(gameState.stats[k] * 0.02));
+                            gameState.stats[k] = Math.min(100, gameState.stats[k] + gain);
+                        }
+                        snsEvent = { type: "긍정", desc: desc, bonus: "전체 능력치 2% 증가" };
+                    }
+                }
+
+                // Injury Events: 5% chance. If triggered, apply 10% 일괄 reduction on stats [Grounded on v22]
+                let injuryEvent = null;
+                if (!stage.name.includes("유소년기") && Math.random() <= 0.05) {
+                    gameState.isInjuredNextYear = true;
+                    let desc = INJURY_EVENTS[Math.floor(Math.random() * INJURY_EVENTS.length)];
+                    let lostStatsDesc = [];
+                    for (let s in gameState.stats) {
+                        let oldVal = gameState.stats[s];
+                        let lossVal = Math.max(1, Math.floor(oldVal * 0.10));
+                        gameState.stats[s] = Math.max(1, oldVal - lossVal);
+                        lostStatsDesc.push(`${s}(-${lossVal})`);
+                    }
+                    injuryEvent = { desc: desc, lost_stats: lostStatsDesc };
+                }
+
+                let yearRecord = {
+                    age: gameState.age,
+                    stage: stage.name,
+                    year_in_stage: gameState.currentStageYear,
+                    team: gameState.team,
+                    matches: matches,
+                    goals: goals,
+                    assists: assists,
+                    avg_rating: avgRating,
+                    rep: gameState.reputation,
+                    salary: gameState.salary,
+                    grown_stats: Array.from(new Set(grownStats)),
+                    declined_stats: Array.from(new Set(declinedStats)),
+                    is_resting: false,
+                    sns_event: snsEvent,
+                    injury_event: injuryEvent,
+                    matches_detail: matchesDetail,
+                    standings_list: standingsList,
+                    scorer_rank: scorerRank
+                };
+
+                gameState.history.push(yearRecord);
+                gameState.lastSeasonRecord = yearRecord;
+                gameState.currentRoundRecord = yearRecord;
+
+                // Increment age and stage years to ensure career progression proceeds [Fixed progression freeze]
+                gameState.age++;
+                gameState.currentStageYear++;
+
+                if (snsEvent && snsEvent.type === "부정" && snsEvent.pending) {
+                    triggerEmergencyCoping(yearRecord);
+                    return;
+                }
+
+                finalizeSimCommentsAndUnlock(yearRecord);
+            }
+        }
+
+        function triggerEmergencyCoping(record) {
+            let emergencyPanel = document.createElement("div");
+            emergencyPanel.className = "bg-red-500/10 border border-red-500/20 rounded-xl p-3.5 space-y-3 mt-3 text-xs";
+            
+            let selectedCoping = [];
+            let shuffled = [...COPING_OPTIONS];
+            for (let i=0; i<3; i++) {
+                let idx = Math.floor(Math.random() * shuffled.length);
+                selectedCoping.push(shuffled.splice(idx, 1)[0]);
+            }
+
+            emergencyPanel.innerHTML = `
+                <div class="space-y-1">
+                    <span class="text-[9px] uppercase bg-red-500/20 text-red-400 py-0.5 px-2 rounded-full font-black">EMERGENCY MEETING</span>
+                    <h4 class="font-extrabold text-white text-xs">📱 SNS 부정 구설수 유출 발생!</h4>
+                    <p class="text-slate-400 leading-normal text-[10px]">${record.sns_event.desc}</p>
+                </div>
+                <div class="space-y-1.5 pt-2 border-t border-slate-800/80">
+                    <p class="font-bold text-slate-300 text-[10px]">대처 방안을 선택하세요 (실패율 50% 리스크):</p>
+                    ${selectedCoping.map((opt, i) => `
+                        <button onclick="executeCopingOption('${opt.action}', '${opt.success.replace(/'/g, "\\'")}', '${opt.failure.replace(/'/g, "\\'")}')" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-left text-[10px] transition-all active:bg-slate-900 leading-normal">
+                            💼 <strong>${opt.action}</strong> - ${opt.desc}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById("commentary-console").appendChild(emergencyPanel);
+            emergencyPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function executeCopingOption(action, successText, failureText) {
+            let isSuccess = Math.random() <= 0.50;
+            let finalMsg = "";
+            let penaltyText = "";
+
+            if (isSuccess) {
+                finalMsg = successText;
+                penaltyText = "대처 성공 (전체 능력치 보존)";
+                gameState.currentRoundRecord.sns_event = {
+                    type: "부정",
+                    desc: gameState.currentRoundRecord.sns_event.desc,
+                    action_taken: action,
+                    status: "성공",
+                    outcome_reason: successText,
+                    penalty: penaltyText
+                };
+            } else {
+                finalMsg = failureText;
+                penaltyText = "대처 실패 (전체 능력치 5% 감소)";
+                let lostStatsList = [];
+                for (let k in gameState.stats) {
+                    let loss = Math.max(1, Math.floor(gameState.stats[k] * 0.05));
+                    gameState.stats[k] = Math.max(1, gameState.stats[k] - loss);
+                    lostStatsList.push(`${k}(-${loss})`);
+                }
+                gameState.currentRoundRecord.sns_event = {
+                    type: "부정",
+                    desc: gameState.currentRoundRecord.sns_event.desc,
+                    action_taken: action,
+                    status: "실패",
+                    outcome_reason: failureText,
+                    penalty: `${penaltyText}: ${lostStatsList.slice(0, 3).join(', ')} 등`
+                };
+            }
+
+            alert(`📱 [대처 결과 - ${isSuccess ? '성공' : '실패'}]\n\n행동: ${action}\n내용: ${finalMsg}\n\n여파: ${penaltyText}`);
+            finalizeSimCommentsAndUnlock(gameState.currentRoundRecord);
+        }
+
+        function finalizeSimCommentsAndUnlock(record) {
+            let commentConsole = document.getElementById("commentary-console");
+            commentConsole.innerHTML += `<div class="py-1 text-yellow-400 font-extrabold border-t border-slate-900/60 mt-2">🏁 시즌 시뮬레이션 일정이 모두 종료되었습니다.</div>`;
+            
+            let flowBtn = document.getElementById("btn-matches-done");
+            flowBtn.disabled = false;
+            flowBtn.classList.remove("cursor-not-allowed");
+            flowBtn.classList.replace("bg-slate-800", "bg-emerald-500");
+            flowBtn.classList.replace("text-slate-400", "text-slate-950");
+            commentConsole.scrollTop = commentConsole.scrollHeight;
+        }
+
+        // Exact mathematics-based Poisson sampler
+        function poissonDraw(lambda) {
+            let L = Math.exp(-lambda);
+            let k = 0;
+            let p = 1.0;
+            do {
+                k++;
+                p *= Math.random();
+            } while (p > L && k < 100);
+            return Math.max(0, k - 1);
+        }
+
+        function weightedRandomSelect(weights) {
+            let total = weights.reduce((a, b) => a + b, 0);
+            let r = Math.random() * total;
+            let sum = 0;
+            for (let i = 0; i < weights.length; i++) {
+                sum += weights[i];
+                if (r <= sum) return i;
+            }
+            return weights.length - 1;
+        }
+
+        // ================= FLOW 5: LEAGUE STANDINGS =================
+        function finishMatchesAndShowStandings() {
+            let record = gameState.currentRoundRecord;
+            document.getElementById("standings-title-text").innerText = `🏆 [${record.stage} - ${record.age}세 시즌]`;
+            
+            let tbodyStandings = document.getElementById("standings-table-body");
+            tbodyStandings.innerHTML = "";
+            
+            record.standings_list.forEach((teamStats, i) => {
+                let idx = i + 1;
+                let isOurTeam = teamStats.team === record.team;
+                let teamClass = isOurTeam ? "bg-emerald-500/10 text-emerald-300 font-black border-l-4 border-emerald-500" : "text-slate-300";
+                let teamNameDisp = isOurTeam ? `${teamStats.team} (우리 팀)` : teamStats.team;
+                
+                tbodyStandings.innerHTML += `
+                    <tr class="border-b border-slate-900/60 ${teamClass}">
+                        <td class="py-2.5 px-2 text-center font-bold">${idx}</td>
+                        <td class="py-2.5 px-2 font-semibold truncate max-w-[120px]">${teamNameDisp}</td>
+                        <td class="py-2.5 px-1 text-center">${teamStats.W + teamStats.D + teamStats.L}</td>
+                        <td class="py-2.5 px-1 text-center text-emerald-400 font-bold">${teamStats.W}</td>
+                        <td class="py-2.5 px-1 text-center">${teamStats.D}</td>
+                        <td class="py-2.5 px-1 text-center text-red-400">${teamStats.L}</td>
+                        <td class="py-2.5 px-1 text-center">${teamStats.GD > 0 ? '+' + teamStats.GD : teamStats.GD}</td>
+                        <td class="py-2.5 px-2 text-center text-yellow-400 font-black">${teamStats.Pts}</td>
+                    </tr>
+                `;
+            });
+
+            let tbodyScorers = document.getElementById("scorers-table-body");
+            tbodyScorers.innerHTML = "";
+            record.scorer_rank.slice(0, 5).forEach((scorer, i) => {
+                let idx = i + 1;
+                let isPlayer = scorer.name.includes(gameState.name);
+                let rowClass = isPlayer ? "text-emerald-300 font-black bg-emerald-500/5" : "text-slate-300";
+                tbodyScorers.innerHTML += `
+                    <tr class="border-b border-slate-900/60 ${rowClass}">
+                        <td class="py-2 px-3 text-center font-bold">${idx}</td>
+                        <td class="py-2 px-3 truncate max-w-[120px]">${isPlayer ? `${gameState.name} ★` : scorer.name}</td>
+                        <td class="py-2 px-3 text-slate-400 truncate max-w-[100px]">${scorer.team}</td>
+                        <td class="py-2 px-3 text-center font-bold">${scorer.goals}</td>
+                    </tr>
+                `;
+            });
+
+            showPage("page-standings");
+        }
+
+        // ================= FLOW 6: DETAILED ROUND SHEET =================
+        function nextToDetailedRoundResults() {
+            let record = gameState.currentRoundRecord;
+            document.getElementById("detailed-sheet-meta").innerText = `No.${gameState.backNumber} ${gameState.position} ${gameState.name}`;
+            document.getElementById("summary-season-title").innerText = `${record.age}세 시즌 최종 결과표`;
+            document.getElementById("summary-team").innerText = record.team;
+            document.getElementById("summary-salary").innerText = formatSalary(record.salary, getStage().salary_unit);
+
+            let tbodyDetails = document.getElementById("match-details-table-body");
+            tbodyDetails.innerHTML = "";
+
+            record.matches_detail.forEach(m => {
+                let resClass = m.result === "승" ? "text-emerald-400 font-bold" : (m.result === "무" ? "text-yellow-400 font-bold" : "text-red-400");
+                tbodyDetails.innerHTML += `
+                    <tr class="border-b border-slate-900/65 text-slate-300">
+                        <td class="py-2 px-2 text-center text-slate-400 font-bold">${m.round}</td>
+                        <td class="py-2 px-3 font-semibold truncate max-w-[120px]">${m.opponent}</td>
+                        <td class="py-2 px-2 text-center font-semibold">${m.score}</td>
+                        <td class="py-2 px-2 text-center ${resClass}">${m.result}</td>
+                        <td class="py-2 px-2 text-center text-yellow-400 font-bold">${m.rating.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            let logContainer = document.getElementById("stat-updown-log");
+            logContainer.innerHTML = "";
+
+            if (record.grown_stats.length > 0) {
+                logContainer.innerHTML += `<div class="py-0.5">🟢 <span class="text-emerald-400">성장 능력치:</span> ${record.grown_stats.join(', ')}</div>`;
+            }
+            if (record.declined_stats.length > 0) {
+                logContainer.innerHTML += `<div class="py-0.5">🔴 <span class="text-red-400">하락 능력치 (에이징):</span> ${record.declined_stats.join(', ')}</div>`;
+            }
+            if (record.sns_event) {
+                if (record.sns_event.type === "부정") {
+                    logContainer.innerHTML += `
+                        <div class="py-1 text-red-400 border border-red-500/20 p-2 rounded-lg bg-red-500/5 mt-1">
+                            📱 [SNS 부정 대처회의 결과]<br>
+                            ㄴ 선택: ${record.sns_event.action_taken}<br>
+                            ㄴ 상태: ${record.sns_event.status}<br>
+                            ㄴ 영향: ${record.sns_event.penalty}
+                        </div>
+                    `;
+                } else {
+                    logContainer.innerHTML += `<div class="py-0.5 text-emerald-400">📱 [SNS 미담 사건] ${record.sns_event.desc} (영향: ${record.sns_event.bonus})</div>`;
+                }
+            }
+            if (record.injury_event) {
+                logContainer.innerHTML += `<div class="py-1 text-red-500 font-bold border border-red-500/20 p-2 rounded-lg bg-red-500/5 mt-1">🤕 [치명적 부상!] 전체 능력치 일괄 10% 영구 감소 및 다음 시즌 재활 스케줄 강제.</div>`;
+            }
+
+            showPage("page-match-details");
+        }
+
+        function finishSeasonDetailedSheet() {
+            showDashboard();
+        }
+
+        // ================= FLOW 7: RETIREMENT & MULTI-ENDINGS =================
+        function triggerEnding() {
+            showPage("page-ending");
+            document.getElementById("end-player-name").innerText = gameState.name;
+            document.getElementById("end-position").innerText = gameState.position;
+            document.getElementById("end-age").innerText = gameState.age;
+            document.getElementById("end-rep").innerText = gameState.reputation;
+            document.getElementById("end-salary").innerText = formatSalary(gameState.salary, getStage().salary_unit);
+            document.getElementById("end-team").innerText = gameState.team;
+            
+            document.getElementById("end-matches").innerText = gameState.totalMatches;
+            document.getElementById("end-goals").innerText = gameState.totalGoals;
+            document.getElementById("end-assists").innerText = gameState.totalAssists;
+
+            let overallAvg = gameState.totalMatches > 0 ? (gameState.averageRatingSum / gameState.totalMatches).toFixed(2) : "0.00";
+            document.getElementById("end-avg-rating").innerText = overallAvg;
+
+            let titleEl = document.getElementById("end-narration-title");
+            let bodyEl = document.getElementById("end-narration-body");
+
+            if (gameState.totalMatches === 0) {
+                titleEl.innerText = "⚽ ‘답답하면 니들이 뛰던가’ 이스터 에그 엔딩";
+                bodyEl.innerText = "단 한 경기도 그라운드를 밟지 않고 유소년 축구교실에서 조기 은퇴했습니다. 훗날 축구 게시판과 언론에 ‘답답하면 니들이 뛰던가!’라는 전설적인 명대사만 회자되며 축구 역사상 가장 독특한 키보드 워리어 평론가로 명성을 떨칠 것입니다.";
+            } else if (gameState.reputation >= 820 && parseFloat(overallAvg) >= 7.3) {
+                titleEl.innerText = "👑 월드클래스 아이콘 - 그라운드의 신";
+                bodyEl.innerText = `축구 역사상 최고의 가치이자 전 세계적인 팬덤을 거느린 발롱도르 다관왕으로 거듭났습니다. 당신이 은퇴를 선언하는 오늘, 전 세계의 수억 명의 팬들이 당신의 No.${gameState.backNumber} 유니폼을 흔들며 은퇴식을 기립니다. [${gameState.team}]의 명예의 전당 중심부에 박제되어 역사상 최고의 축구 지배자로 영원히 기억될 것입니다.`;
+            } else if (gameState.reputation >= 550 && parseFloat(overallAvg) >= 6.8) {
+                titleEl.innerText = "⭐ 명문 리그의 주전 스타 - 스프린트의 마술사";
+                bodyEl.innerText = `${gameState.name} 선수는 명문 무대들의 뜨거운 러브콜 속에서 팀의 중추적 전술 에이스로 오랜 기간 맹활약했습니다. 빠른 가속도와 예리한 판단력으로 상대 수비진의 공포로 군림했으며, 국가대표팀의 확고한 캡틴으로서 나라를 수십 번 승리로 이끌어 국가적 영웅 대접을 받습니다.`;
+            } else if (gameState.reputation >= 250) {
+                titleEl.innerText = "⚽ 준수한 베테랑 프로 - 팀의 묵묵한 숨은 영웅";
+                bodyEl.innerText = "당신은 화려한 명품 월드클래스급 스타는 아니었으나, 누구보다 지치지 않는 투지와 왕성한 밸런스로 구단 기강을 견인한 전설적인 베테랑 일꾼이었습니다. 스카우터들과 보드진들은 당신을 대체 불가능한 '명품 보증수표'로 영원히 기억할 것입니다.";
+            } else {
+                titleEl.innerText = "🩹 조기 은퇴 및 동네 조축 레전드";
+                bodyEl.innerText = "잦은 기량 훈련 수치 조율의 아쉬움과 기복으로 인해 프로 1부 리그의 높은 벽을 실감하며 하부 리그에서 은퇴를 맞이했습니다. 비록 화려한 세계 무대의 스타는 되지 못했으나, 매주 동네 조기 축구회에서 뜨거운 조명을 받으며 축구를 진정으로 즐길 줄 알았던 행복한 축구 인생의 마침표를 장식합니다.";
+            }
+        }
+
+        function restartGame() {
+            gameState = {
+                name: "이유망",
+                position: "공격수",
+                backNumber: 10,
+                preferredFoot: "오른발",
+                archetypeId: "1",
+                isLegendary: false,
+                stats: {},
+                baseStats: {},
+                age: 8,
+                reputation: 50,
+                team: "동네 축구교실",
+                salary: 10,
+                currentStageIndex: 0,
+                currentStageYear: 1,
+                totalMatches: 0,
+                totalGoals: 0,
+                totalAssists: 0,
+                averageRatingSum: 0.0,
+                isInjuredNextYear: false,
+                isRestingSeason: false,
+                history: [],
+                lastSeasonRecord: null,
+                currentRoundRecord: null,
+                isFullStatsShowing: false
+            };
+            
+            document.getElementById("input-name").value = "";
+            document.getElementById("input-backnumber").value = "10";
+            document.getElementById("input-foot").value = "오른발";
+            
+            showPage("page-creation");
+        }
+
+        window.onload = function() {
+            showPage("page-creation");
+        };
+    </script>
+</body>
+</html>
